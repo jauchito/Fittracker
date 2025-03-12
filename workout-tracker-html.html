@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#4a8fed">
+    <title>FitTrack Pro</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkZpdFRyYWNrIFBybyIsCiAgInNob3J0X25hbWUiOiAiRml0VHJhY2siLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICIvYXBpL3BsYWNlaG9sZGVyLzE5Mi8xOTIiLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0KICBdLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzRhOGZlZCIsCiAgInRoZW1lX2NvbG9yIjogIiM0YThmZWQiCn0=">
+    <link rel="apple-touch-icon" href="/api/placeholder/192/192">
+    <style>
+        :root {
+            --primary: #4a8fed;
+            --primary-dark: #3a7fd6;
+            --secondary: #ff6b6b;
+            --secondary-dark: #e05a5a;
+            --tertiary: #68d391;
+            --tertiary-dark: #48bb71;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius: 10px;
+            --transition: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        button, .button {
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 600;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .primary-button {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .primary-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .secondary-button {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .secondary-button:hover {
+            background-color: var(--secondary-dark);
+        }
+
+        .tertiary-button {
+            background-color: var(--tertiary);
+            color: white;
+        }
+
+        .tertiary-button:hover {
+            background-color: var(--tertiary-dark);
+        }
+
+        .ghost-button {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .ghost-button:hover {
+            background-color: rgba(74, 143, 237, 0.05);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 143, 237, 0.2);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo svg {
+            margin-right: 10px;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 32px;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-form {
+            width: 100%;
+        }
+
+        /* App Layout */
+        .app-container {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .app-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: var(--shadow);
+        }
+
+        .app-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 24px 0;
+        }
+
+        .workout-tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .workout-tab {
+            padding: 10px 20px;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .workout-tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .workout-editor-toggle {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .workout-panel {
+            display: none;
+        }
+
+        .workout-panel.active {
+            display: block;
+        }
+
+        .exercise-item {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .exercise-item:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .exercise-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .exercise-details {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .workout-editor {
+            display: none;
+            margin-top: 24px;
+        }
+
+        .workout-editor.active {
+            display: block;
+        }
+
+        .editor-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--tertiary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* PWA Installation Banner */
+        .install-banner {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            padding: 16px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .install-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .install-message {
+            flex: 1;
+        }
+
+        .install-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .app-header-content {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* Spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-card fade-in">
+            <div class="login-header">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 10H20L18 7M17 10V16C17 17.1046 16.1046 18 15 18H12M17 10L13 6M7 10H4L6 7M7 10V16C7 17.1046 7.89543 18 9 18H12M7 10L11 6M12 18V22M12 22L9 19M12 22L15 19" stroke="#4a8fed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>FitTrack Pro</h1>
+                <p>Track your daily workouts</p>
+            </div>
+            <div class="login-form">
+                <h3>Sign In</h3>
+                <input type="password" id="passwordInput" placeholder="Enter password" />
+                <button class="primary-button" id="loginButton" style="width: 100%;">Sign In</button>
+                <p id="loginError" style="color: var(--secondary); margin-top: 12px; text-align: center; display: none;">Incorrect password. Please try again.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Screen -->
+    <div class="app-container" id="appScreen">
+        <header class="app-header">
+            <div class="app-header-content container">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 10H20L18 7M17 10V16C17 17.1046 16.1046 18 15 18H12M17 10L13 6M7 10H4L6 7M7 10V16C7 17.1046 7.89543 18 9 18H12M7 10L11 6M12 18V22M12 22L9 19M12 22L15 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>FitTrack Pro</span>
+                </div>
+                <div class="header-actions">
+                    <button class="ghost-button" id="editToggleButton" style="color: white; border-color: rgba(255,255,255,0.3);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px; vertical-align: -4px;">
+                            <path d="M11 4H4C3.44772 4 3 4.44772 3 5V19C3 19.5523 3.44772 20 4 20H18C18.5523 20 19 19.5523 19 19V12M17.5858 3.58579C18.3668 2.80474 19.6332 2.80474 20.4142 3.58579C21.1953 4.36683 21.1953 5.63316 20.4142 6.41421L11.8284 15H9L9 12.1716L17.5858 3.58579Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Edit Workouts
+                    </button>
+                    <button class="secondary-button" id="logoutButton">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px; vertical-align: -4px;">
+                            <path d="M17 16L21 12M21 12L17 8M21 12H9M13 16V17C13 18.6569 11.6569 20 10 20H6C4.34315 20 3 18.6569 3 17V7C3 5.34315 4.34315 4 6 4H10C11.6569 4 13 5.34315 13 7V8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="content container">
+            <div class="workout-tabs">
+                <div class="workout-tab active" data-target="cardio">Cardio</div>
+                <div class="workout-tab" data-target="strength">Strength</div>
+                <div class="workout-tab" data-target="mix">Mixed</div>
+            </div>
+
+            <!-- Workout Display Panels -->
+            <div class="workout-panels">
+                <!-- Cardio Workout Panel -->
+                <div class="workout-panel active" id="cardio-panel">
+                    <div id="cardio-exercises">
+                        <!-- Exercises will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Strength Workout Panel -->
+                <div class="workout-panel" id="strength-panel">
+                    <div id="strength-exercises">
+                        <!-- Exercises will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Mixed Workout Panel -->
+                <div class="workout-panel" id="mix-panel">
+                    <div id="mix-exercises">
+                        <!-- Exercises will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workout Editors -->
+            <div class="workout-editor" id="cardio-editor">
+                <h3>Edit Cardio Workout</h3>
+                <textarea id="cardio-editor-content" rows="10" placeholder="Enter exercises, one per line. Format: Exercise Name | Duration/Distance | Notes"></textarea>
+                <div class="editor-actions">
+                    <button class="ghost-button" id="cardio-cancel">Cancel</button>
+                    <button class="primary-button" id="cardio-save">Save Workout</button>
+                </div>
+            </div>
+
+            <div class="workout-editor" id="strength-editor">
+                <h3>Edit Strength Workout</h3>
+                <textarea id="strength-editor-content" rows="10" placeholder="Enter exercises, one per line. Format: Exercise Name | Sets x Reps | Weight | Notes"></textarea>
+                <div class="editor-actions">
+                    <button class="ghost-button" id="strength-cancel">Cancel</button>
+                    <button class="primary-button" id="strength-save">Save Workout</button>
+                </div>
+            </div>
+
+            <div class="workout-editor" id="mix-editor">
+                <h3>Edit Mixed Workout</h3>
+                <textarea id="mix-editor-content" rows="10" placeholder="Enter exercises, one per line. Format: Exercise Name | Sets/Duration | Intensity | Notes"></textarea>
+                <div class="editor-actions">
+                    <button class="ghost-button" id="mix-cancel">Cancel</button>
+                    <button class="primary-button" id="mix-save">Save Workout</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast">Workout saved successfully!</div>
+
+        <!-- PWA Installation Banner -->
+        <div class="install-banner" id="installBanner">
+            <div class="install-content container">
+                <div class="install-message">
+                    <h3>Add to Home Screen</h3>
+                    <p>Install FitTrack Pro for a better experience</p>
+                </div>
+                <div class="install-actions">
+                    <button class="ghost-button" id="installLater">Later</button>
+                    <button class="primary-button" id="installApp">Install</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample workout data
+        const sampleWorkouts = {
+            cardio: [
+                { name: "Running", details: "30 minutes | 5km | Moderate pace", notes: "Focus on maintaining consistent breathing" },
+                { name: "Cycling", details: "45 minutes | 15km | Intervals", notes: "30 sec sprint, 90 sec recovery x10" },
+                { name: "Jump Rope", details: "15 minutes | High intensity", notes: "Mix single jumps and double-unders" }
+            ],
+            strength: [
+                { name: "Squats", details: "4 sets x 12 reps | 135lbs", notes: "Focus on form and depth" },
+                { name: "Bench Press", details: "5 sets x 5 reps | 185lbs", notes: "Progressive loading, last set to failure" },
+                { name: "Pull-ups", details: "3 sets x 8-10 reps | Bodyweight", notes: "Use assistance band if needed" }
+            ],
+            mix: [
+                { name: "Circuit 1", details: "3 rounds | 45 sec work, 15 sec rest", notes: "Push-ups, Air squats, Mountain climbers" },
+                { name: "EMOM 20", details: "Even: 10 KB swings | Odd: 10 burpees", notes: "Scale as needed, rest with remaining time" },
+                { name: "Tabata", details: "8 rounds | 20 sec on, 10 sec off", notes: "Alternate between rowing and plank holds" }
+            ]
+        };
+
+        // DOM Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const appScreen = document.getElementById('appScreen');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginButton = document.getElementById('loginButton');
+        const loginError = document.getElementById('loginError');
+        const logoutButton = document.getElementById('logoutButton');
+        const editToggleButton = document.getElementById('editToggleButton');
+        const workoutTabs = document.querySelectorAll('.workout-tab');
+        const workoutPanels = document.querySelectorAll('.workout-panel');
+        const workoutEditors = document.querySelectorAll('.workout-editor');
+        const toast = document.getElementById('toast');
+        const installBanner = document.getElementById('installBanner');
+        const installLater = document.getElementById('installLater');
+        const installApp = document.getElementById('installApp');
+
+        // Editor elements
+        const cardioEditor = document.getElementById('cardio-editor');
+        const strengthEditor = document.getElementById('strength-editor');
+        const mixEditor = document.getElementById('mix-editor');
+        const cardioEditorContent = document.getElementById('cardio-editor-content');
+        const strengthEditorContent = document.getElementById('strength-editor-content');
+        const mixEditorContent = document.getElementById('mix-editor-content');
+        const cardioCancel = document.getElementById('cardio-cancel');
+        const strengthCancel = document.getElementById('strength-cancel');
+        const mixCancel = document.getElementById('mix-cancel');
+        const cardioSave = document.getElementById('cardio-save');
+        const strengthSave = document.getElementById('strength-save');
+        const mixSave = document.getElementById('mix-save');
+
+        // Exercise containers
+        const cardioExercises = document.getElementById('cardio-exercises');
+        const strengthExercises = document.getElementById('strength-exercises');
+        const mixExercises = document.getElementById('mix-exercises');
+
+        // Password for the app (normally this would be handled securely on a server)
+        const CORRECT_PASSWORD = 'fitness123';
+
+        // Current edit mode state
+        let isEditMode = false;
+        let deferredPrompt = null;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start with login screen
+            showLogin();
+            
+            // Load workout data using sample data
+            renderWorkouts(sampleWorkouts);
+        });
+
+        // Login functionality
+        loginButton.addEventListener('click', () => {
+            // Simplified login - just show the app, no storage needed
+            showApp();
+            loginError.style.display = 'none';
+        });
+
+        // Allow Enter key to trigger login
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loginButton.click();
+            }
+        });
+
+        // Logout functionality
+        logoutButton.addEventListener('click', () => {
+            showLogin();
+            passwordInput.value = '';
+        });
+
+        // Toggle edit mode
+        editToggleButton.addEventListener('click', () => {
+            isEditMode = !isEditMode;
+            toggleEditMode();
+        });
+
+        // Handle tab switching
+        workoutTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.target;
+                
+                // Update active tab
+                workoutTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Show corresponding panel
+                workoutPanels.forEach(panel => panel.classList.remove('active'));
+                document.getElementById(`${target}-panel`).classList.add('active');
+                
+                // If in edit mode, show corresponding editor
+                if (isEditMode) {
+                    workoutEditors.forEach(editor => editor.classList.remove('active'));
+                    document.getElementById(`${target}-editor`).classList.add('active');
+                }
+            });
+        });
+
+        // Cancel editing
+        cardioCancel.addEventListener('click', () => cancelEditing());
+        strengthCancel.addEventListener('click', () => cancelEditing());
+        mixCancel.addEventListener('click', () => cancelEditing());
+
+        // Save workout changes
+        cardioSave.addEventListener('click', () => saveWorkout('cardio'));
+        strengthSave.addEventListener('click', () => saveWorkout('strength'));
+        mixSave.addEventListener('click', () => saveWorkout('mix'));
+
+        // PWA Installation
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            // Show the install banner
+            installBanner.style.display = 'block';
+        });
+
+        installApp.addEventListener('click', () => {
+            // Hide the app installation banner
+            installBanner.style.display = 'none';
+            // Show the installation prompt
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    deferredPrompt = null;
+                });
+            }
+        });
+
+        installLater.addEventListener('click', () => {
+            installBanner.style.display = 'none';
+        });
+
+        // Functions
+        function showLogin() {
+            loginScreen.style.display = 'flex';
+            appScreen.style.display = 'none';
+        }
+
+        function showApp() {
+            loginScreen.style.display = 'none';
+            appScreen.style.display = 'flex';
+        }
+
+        function toggleEditMode() {
+            if (isEditMode) {
+                // Enter edit mode
+                editToggleButton.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px; vertical-align: -4px;">
+                        <path d="M6 18L18 18M12 22L12 6M12 6L16 10M12 6L8 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Exit Edit Mode
+                `;
+                
+                // Show active editor
+                const activeTab = document.querySelector('.workout-tab.active').dataset.target;
+                workoutEditors.forEach(editor => editor.classList.remove('active'));
+                document.getElementById(`${activeTab}-editor`).classList.add('active');
+                
+                // Populate editor content
+                populateEditors();
+            } else {
+                // Exit edit mode
+                editToggleButton.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px; vertical-align: -4px;">
+                        <path d="M11 4H4C3.44772 4 3 4.44772 3 5V19C3 19.5523 3.44772 20 4 20H18C18.5523 20 19 19.5523 19 19V12M17.5858 3.58579C18.3668 2.80474 19.6332 2.80474 20.4142 3.58579C21.1953 4.36683 21.1953 5.63316 20.4142 6.41421L11.8284 15H9L9 12.1716L17.5858 3.58579Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Edit Workouts
+                `;
+                
+                // Hide all editors
+                workoutEditors.forEach(editor => editor.classList.remove('active'));
+            }
+        }
+
+        function loadWorkouts() {
+            // Always use sample data since we can't use localStorage
+            renderWorkouts(sampleWorkouts);
+        }
+
+        function renderWorkouts(workouts) {
+            // Clear existing content
+            cardioExercises.innerHTML = '';
+            strengthExercises.innerHTML = '';
+            mixExercises.innerHTML = '';
+            
+            // Render cardio exercises
+            workouts.cardio.forEach(exercise => {
+                cardioExercises.appendChild(createExerciseElement(exercise));
+            });
+            
+            // Render strength exercises
+            workouts.strength.forEach(exercise => {
+                strengthExercises.appendChild(createExerciseElement(exercise));
+            });
+            
+            // Render mixed exercises
+            workouts.mix.forEach(exercise => {
+                mixExercises.appendChild(createExerciseElement(exercise));
+            });
+        }
+
+        function createExerciseElement(exercise) {
+            const exerciseElement = document.createElement('div');
+            exerciseElement.className = 'exercise-item fade-in';
+            
+            exerciseElement.innerHTML = `
+                <div class="exercise-header">
+                    <div class="exercise-name">${exercise.name}</div>
+                    <div class="exercise-details">${exercise.details}</div>
+                </div>
+                ${exercise.notes ? `<div class="exercise-notes">${exercise.notes}</div>` : ''}
+            `;
+            
+            return exerciseElement;
+        }
+
+        function populateEditors() {
+            // Use sample workouts directly
+            const workouts = sampleWorkouts;
+            
+            // Format workout data for editors
+            cardioEditorContent.value = workouts.cardio.map(exercise => 
+                `${exercise.name} | ${exercise.details.split(' | ')[0]} | ${exercise.details.split(' | ')[1] || ''} | ${exercise.notes || ''}`
+            ).join('\n');
+            
+            strengthEditorContent.value = workouts.strength.map(exercise => 
+                `${exercise.name} | ${exercise.details.split(' | ')[0]} | ${exercise.details.split(' | ')[1] || ''} | ${exercise.notes || ''}`
+            ).join('\n');
+            
+            mixEditorContent.value = workouts.mix.map(exercise => 
+                `${exercise.name} | ${exercise.details.split(' | ')[0]} | ${exercise.details.split(' | ')[1] || ''} | ${exercise.notes || ''}`
+            ).join('\n');
+        }
+
+        function cancelEditing() {
+            isEditMode = false;
+            toggleEditMode();
+        }
+
+        function saveWorkout(type) {
+            // Use sample workouts directly
+            const workouts = {...sampleWorkouts};
+            
+            // Parse editor content
+            let editorContent = '';
+            if (type === 'cardio') {
+                editorContent = cardioEditorContent.value;
+            } else if (type === 'strength') {
+                editorContent = strengthEditorContent.value;
+            } else if (type === 'mix') {
+                editorContent = mixEditorContent.value;
+            }
+            
+            // Process each line into workout objects
+            const exercises = editorContent.split('\n').filter(line => line.trim() !== '').map(line => {
+                const parts = line.split('|').map(part => part.trim());
+                const name = parts[0] || '';
+                let details = '';
+                if (parts.length > 2) {
+                    details = `${parts[1]} | ${parts[2]}`;
+                } else if (parts.length > 1) {
+                    details = parts[1];
+                }
+                const notes = parts[3] || '';
+                
+                return { name, details, notes };
+            });
+            
+            // Update workouts object
+            workouts[type] = exercises;
+            
+            // In this sandboxed version, we'll just update the sampleWorkouts object
+            sampleWorkouts[type] = workouts[type];
+            
+            // Re-render workouts
+            renderWorkouts(workouts);
+            
+            // Exit edit mode
+            isEditMode = false;
+            toggleEditMode();
+            
+            // Show toast notification
+            showToast('Workout saved successfully!');
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Handle PWA installation for iOS
+        // Since iOS doesn't support the beforeinstallprompt event,
+        // we'll detect iOS and show installation instructions
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches;
+        
+        if (isIOS && !isInStandaloneMode) {
+            // Show iOS installation instructions after a delay
+            setTimeout(() => {
+                showToast('Add to Home Screen for the best experience');
+                // No localStorage needed
+            }, 5000);
+        }
+        
+        // Service Worker registration for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
